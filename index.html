@@ -1,10 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Welcome to the test page</title>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(270deg, #ff9a9e, #fad0c4);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      font-family: Arial, sans-serif;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .login-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 300px;
+    }
+
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #ff758c;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ff4e50;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      height: 20px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Moshi moshii</h1>
-    <p3>Kore wa website da!</p3>
+  <div class="login-box">
+    <h2>Enter Relation</h2>
+    <input type="text" id="relation" placeholder="Type here...">
+    <button onclick="login()">Login</button>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <!-- preload sounds -->
+  <audio id="yaySound" src="yay.mp3" preload="auto"></audio>
+  <audio id="nonoSound" src="nono.mp3" preload="auto"></audio>
+
+  <script>
+    function login() {
+      const relation = document.getElementById("relation").value.trim().toLowerCase();
+      const yaySound = document.getElementById("yaySound");
+      const nonoSound = document.getElementById("nonoSound");
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (relation === "wife") {
+        yaySound.play();
+        errorMsg.textContent = "";
+        // wait until sound starts, then redirect
+        setTimeout(() => {
+          window.location.href = "animation.html";
+        }, 1000); // adjust delay to match your yay sound length
+      } else {
+        nonoSound.play();
+        errorMsg.textContent = "Access denied!";
+      }
+    }
+  </script>
 </body>
 </html>
