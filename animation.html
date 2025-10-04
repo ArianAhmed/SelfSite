@@ -81,6 +81,21 @@
       opacity: 0.9;
     }
 
+    /* Heart outline confetti */
+    .heart-outline {
+      position: absolute;
+      color: #ff4d94;
+      font-size: 1.5rem;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: floatHearts 1.2s ease-out forwards;
+    }
+
+    @keyframes floatHearts {
+      0% { transform: scale(0.5) translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1.5) translateY(-100px) rotate(45deg); opacity: 0; }
+    }
+
     #birthdayImage {
       position: absolute;
       width: 200px;
@@ -102,7 +117,7 @@
 <body>
   <h1>💖 Happy Birthday, My Love 💖</h1>
   <p id="message"></p>
-  <img id="birthdayImage" src="hmm.jpg" alt="Surprise Image">
+  <img id="birthdayImage" src="hmm.png" alt="Surprise Image">
 
   <!-- Background music -->
   <audio id="bgMusic" src="happy_birthday.mp3" autoplay loop></audio>
@@ -195,6 +210,39 @@
       setTimeout(() => heart.remove(), 6000);
     }
     setInterval(createHeart, 800);
+
+    // ❤️ Click-to-heart-outline-confetti
+    document.addEventListener("click", (e) => {
+      const colors = ["#ff4d94", "#ff99cc", "#ff66b3", "#ff3366"];
+      const count = 20; // number of hearts per click
+
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart-outline";
+        heart.textContent = "♡";
+        heart.style.left = e.clientX + "px";
+        heart.style.top = e.clientY + "px";
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.fontSize = 16 + Math.random() * 20 + "px";
+        heart.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(heart);
+
+        // Slight random spread
+        const dx = (Math.random() - 0.5) * 100;
+        const dy = (Math.random() - 0.5) * 100;
+
+        heart.animate([
+          { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy - 120}px) scale(1.8)`, opacity: 0 }
+        ], {
+          duration: 1000 + Math.random() * 500,
+          easing: "ease-out",
+          fill: "forwards"
+        });
+
+        setTimeout(() => heart.remove(), 1500);
+      }
+    });
   </script>
 </body>
 </html>
