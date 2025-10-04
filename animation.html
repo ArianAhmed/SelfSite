@@ -35,6 +35,16 @@
       opacity: 0;
       z-index: 10;
       text-align: center;
+      line-height: 1.6;
+    }
+
+    /* Common outline style for text characters */
+    .outlined-letter {
+      text-shadow:
+        -1px -1px 2px rgba(0, 0, 0, 0.8),
+        1px -1px 2px rgba(0, 0, 0, 0.8),
+        -1px 1px 2px rgba(0, 0, 0, 0.8),
+        1px 1px 2px rgba(0, 0, 0, 0.8);
     }
 
     .balloon {
@@ -140,7 +150,7 @@
       "#e3baff"  // lavender
     ];
 
-    // Typewriter effect with rainbow colors
+    // Typewriter effect with rainbow colors and black outlines
     let i = 0;
     function typeWriter() {
       if (i < message.length) {
@@ -149,6 +159,7 @@
         const span = document.createElement("span");
         span.textContent = message.charAt(i);
         span.style.color = color;
+        span.classList.add("outlined-letter"); // apply outline effect
         msgElement.appendChild(span);
         i++;
         setTimeout(typeWriter, 80);
@@ -242,7 +253,6 @@
         heart.style.transform = `rotate(${Math.random() * 360}deg)`;
         document.body.appendChild(heart);
 
-        // Slight random spread
         const dx = (Math.random() - 0.5) * 100;
         const dy = (Math.random() - 0.5) * 100;
 
