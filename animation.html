@@ -15,135 +15,124 @@
       flex-direction: column;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       color: white;
-      cursor: pointer; /* shows it's clickable */
     }
 
     h1 {
       font-size: 4rem;
       text-shadow: 0 0 20px #ff4d94, 0 0 40px #ff99cc;
-      animation: glow 2s ease-in-out infinite alternate;
+      animation: pulseBounce 1.5s infinite;
       z-index: 10;
     }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #ff4d94, 0 0 20px #ff99cc; }
-      to { text-shadow: 0 0 30px #ff3385, 0 0 60px #ff66b3; }
+    @keyframes pulseBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2) translateY(-10px); }
     }
 
-    .balloon {
-      position: absolute;
-      bottom: -150px;
-      width: 80px;
-      height: 100px;
-      border-radius: 50% 50% 50% 50%;
-      animation: float 10s linear infinite;
-      opacity: 0.8;
-    }
-
-    .balloon::after {
-      content: "";
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      width: 2px;
-      height: 40px;
-      background: white;
-    }
-
-    @keyframes float {
-      from { transform: translateY(0) rotate(0deg); }
-      to { transform: translateY(-120vh) rotate(360deg); }
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 2rem;
-      animation: floatUp 6s linear infinite;
-      opacity: 0.8;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(0) scale(0.5); opacity: 1; }
-      to { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    #message {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      opacity: 0;
+      z-index: 10;
     }
 
     .confetti {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background: red;
-      animation: fall 2s linear forwards;
+      border-radius: 2px;
+      opacity: 0.9;
     }
 
-    @keyframes fall {
-      from { transform: translateY(0) rotate(0deg); opacity: 1; }
-      to { transform: translateY(200px) rotate(720deg); opacity: 0; }
+    #birthdayImage {
+      position: absolute;
+      width: 200px;
+      height: auto;
+      opacity: 0;
+      transform: scale(0);
+      z-index: 20;
+    }
+
+    @keyframes imageShow {
+      0% { opacity: 0; transform: scale(0) rotate(0deg); }
+      30% { opacity: 1; transform: scale(1.2) rotate(360deg); }
+      60% { opacity: 1; transform: scale(1) rotate(360deg); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: scale(0.5); }
     }
   </style>
 </head>
 <body>
   <h1>💖 Happy Birthday, My Love 💖</h1>
-  <p style="font-size:1.5rem; z-index:10;">Click anywhere for confetti 🎉</p>
+  <p id="message"></p>
+  <img id="birthdayImage" src="hmm.png" alt="Surprise Image">
 
-  <!-- Sounds -->
   <audio id="bgMusic" src="happy_birthday.mp3" autoplay loop></audio>
-  <audio id="popSound" src="party_popper.mp3"></audio>
-  <audio id="yaySound" src="yay.mp3"></audio>
 
   <script>
-    // Play pop sound once at load
-    window.onload = () => {
-      document.getElementById("popSound").play();
-    };
+    const message = "Many many happy returns of the day! Happy 22!";
+    const msgElement = document.getElementById("message");
 
-    // Generate balloons
-    function createBalloon() {
-      const balloon = document.createElement("div");
-      balloon.className = "balloon";
-      balloon.style.left = Math.random() * 100 + "vw";
-      balloon.style.background = `hsl(${Math.random()*360}, 70%, 70%)`;
-      balloon.style.animationDuration = 8 + Math.random() * 5 + "s";
-      document.body.appendChild(balloon);
-      setTimeout(() => balloon.remove(), 12000);
-    }
-    setInterval(createBalloon, 1000);
-
-    // Generate hearts
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerHTML = "💖";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = 4 + Math.random() * 3 + "s";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
-    }
-    setInterval(createHeart, 800);
-
-    // Confetti generator (on click)
-    function createConfetti(x, y) {
-      for (let i = 0; i < 30; i++) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = x + "px";
-        confetti.style.top = y + "px";
-        confetti.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
-        confetti.style.transform = `rotate(${Math.random()*360}deg)`;
-        confetti.style.animationDuration = (1 + Math.random()*1.5) + "s";
-        confetti.style.width = 6 + Math.random()*6 + "px";
-        confetti.style.height = 6 + Math.random()*6 + "px";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 2000);
+    // Typewriter effect
+    let i = 0;
+    function typeWriter() {
+      if (i < message.length) {
+        msgElement.style.opacity = 1;
+        msgElement.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeWriter, 80);
+      } else {
+        // After typing finishes -> trigger confetti
+        setTimeout(confettiBurst, 500);
       }
     }
+    setTimeout(typeWriter, 1000); // delay before typing starts
 
-    // Handle click
-    document.body.addEventListener("click", (e) => {
-      const yaySound = document.getElementById("yaySound");
-      yaySound.currentTime = 0;
-      yaySound.play();
-      createConfetti(e.clientX, e.clientY);
-    });
+    // Confetti burst function
+    function confettiBurst() {
+      const colors = ["#ff4d94","#ffcc00","#66ff66","#66ccff","#ff66b3"];
+      const count = 200;
+      for (let j = 0; j < count; j++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(conf);
+
+        const angle = (Math.PI * 2 * j) / count;
+        const velocity = 6 + Math.random() * 4;
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+
+        let vx = Math.cos(angle) * velocity;
+        let vy = Math.sin(angle) * velocity;
+
+        let lifespan = 120 + Math.random() * 40;
+        let frame = 0;
+
+        function animate() {
+          x += vx;
+          y += vy;
+          conf.style.left = x + "px";
+          conf.style.top = y + "px";
+          frame++;
+          if (frame < lifespan) {
+            requestAnimationFrame(animate);
+          } else {
+            conf.remove();
+          }
+        }
+        animate();
+      }
+
+      // After confetti, show image
+      setTimeout(showImage, 2000);
+    }
+
+    function showImage() {
+      const img = document.getElementById("birthdayImage");
+      img.style.animation = "imageShow 6s ease forwards";
+    }
   </script>
 </body>
 </html>
